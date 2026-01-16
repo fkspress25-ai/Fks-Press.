@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FKS Press Admin</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { color: #222; }
+    .column { background: #fff; padding: 15px; margin: 15px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .column h2 { margin-top: 0; }
+    textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+    input[type=text], input[type=url] { width: 100%; margin-bottom: 10px; padding: 5px; }
+    button { padding: 8px 15px; background-color: #3498db; color: #fff; border: none; cursor: pointer; }
+    button:hover { background-color: #2980b9; }
+  </style>
+</head>
+<body>
+  <h1>FKS Press Admin Panel</h1>
+  <p>Password required:</p>
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="login()">Login</button>
+
+  <div id="editor" style="display:none;">
+    <p>Edit each column below. Bold, italic, links, images (via URL), videos (YouTube embed links) are allowed.</p>
+
+    <div class="column">
+      <h2>Home</h2>
+      <div contenteditable="true" id="homeEditor" style="min-height:150px; border:1px solid #ccc; padding:5px;"></div>
+      <button onclick="saveColumn('home')">Save Home</button>
+    </div>
+
+    <div class="column">
+      <h2>Campus Life</h2>
+      <div contenteditable="true" id="campusEditor" style="min-height:150px; border:1px solid #ccc; padding:5px;"></div>
+      <button onclick="saveColumn('campus')">Save Campus Life</button>
+    </div>
+
+    <div class="column">
+      <h2>College Resources</h2>
+      <div contenteditable="true" id="resourcesEditor" style="min-height:150px; border:1px solid #ccc; padding:5px;"></div>
+      <button onclick="saveColumn('resources')">Save College Resources</button>
+    </div>
+
+    <div class="column">
+      <h2>Sports</h2>
+      <div contenteditable="true" id="sportsEditor" style="min-height:150px; border:1px solid #ccc; padding:5px;"></div>
+      <button onclick="saveColumn('sports')">Save Sports</button>
+    </div>
+
+    <div class="column">
+      <h2>Opinion Pieces</h2>
+      <div contenteditable="true" id="opinionEditor" style="min-height:150px; border:1px solid #ccc; padding:5px;"></div>
+      <button onclick="saveColumn('opinion')">Save Opinion Pieces</button>
+    </div>
+
+    <button onclick="saveAll()">Save All Columns</button>
+  </div>
+
+  <script>
+    const adminPassword = 'FKS123';
+
+    function login() {
+      const pw = document.getElementById('password').value;
+      if(pw === adminPassword){
+        document.getElementById('editor').style.display = 'block';
+        alert('Access granted');
+        loadAll();
+      } else {
+        alert('Incorrect password!');
+      }
+    }
+
+    function saveColumn(col) {
+      const editor = document.getElementById(col + 'Editor');
+      localStorage.setItem(col, editor.innerHTML);
+      alert(col + ' saved!');
+    }
+
+    function saveAll() {
+      ['home','campus','resources','sports','opinion'].forEach(col => {
+        saveColumn(col);
+      });
+      alert('All columns saved!');
+    }
+
+    function loadAll() {
+      ['home','campus','resources','sports','opinion'].forEach(col => {
+        const content = localStorage.getItem(col);
+        if(content) document.getElementById(col + 'Editor').innerHTML = content;
+      });
+    }
+  </script>
+</body>
+</html>
