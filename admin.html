@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FKS Press - Admin Panel</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { font-family: Georgia, serif; background:#f4f4f4; margin:0; padding:0; }
+  header { background:#222; color:#fff; padding:20px; text-align:center; }
+  header h1 { font-family:'Canterbury', serif; margin:0; }
+  nav { margin-top:10px; }
+  nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
+  nav a:hover { text-decoration:underline; }
+  #login { margin-top:50px; text-align:center; }
+  #login input { padding:8px; width:200px; }
+  #login button { padding:8px 12px; margin-left:5px; }
+  #editorSection { display:none; padding:20px; }
+  #pageSelector { margin-bottom:15px; padding:5px; }
+  .column { margin-bottom:30px; }
+  .column h2 { margin-bottom:10px; }
+  .article { border:1px solid #ccc; background:#fff; padding:10px; margin-bottom:10px; min-height:80px; position:relative; }
+  .article button { position:absolute; top:5px; right:5px; background:#e74c3c; }
+  .controls { margin-bottom:15px; }
+  .controls button { padding:6px 12px; margin-right:5px; cursor:pointer; border:none; border-radius:4px; background:#3498db; color:#fff; }
+  .controls button:hover { background:#2980b9; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FKS Press - Admin Panel</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="campus.html">Campus Life</a>
+    <a href="resources.html">College Resources</a>
+    <a href="sports.html">Sports</a>
+    <a href="opinion.html">Opinion Pieces</a>
+  </nav>
+</header>
+
+<div id="login">
+  <input type="password" id="password" placeholder="Enter admin password">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="editorSection">
+  <label for="pageSelector">Select Column:</label>
+  <select id="pageSelector" onchange="loadColumn()">
+    <option value="home">Home</option>
+    <option value="campus">Campus Life</option>
+    <option value="resources">College Resources</option>
+    <option value="sports">Sports</option>
+    <option value="opinion">Opinion Pieces</option>
+  </select>
+
+  <div class="controls">
+    <button onclick="addArticle()">Add Article</button>
+    <button onclick="saveColumn(false)">Save</button>
+    <button onclick="saveColumn(true)">Save & Finish</button>
+  </div>
+
+  <div id="columnEditor"></div>
+</div>
+
+<script>
+// ==== Admin Password ====
+const ADMIN_PASSWORD = "admin123";
+
+function login(){
+  const input = document.getElementById("password").value;
+  if(input === ADMIN_PASSWORD){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("editorSection").style.display = "block";
+    loadColumn();
+  } else {
+    alert("Wrong password!");
+  }
+}
+
+// ==== Column Editor ====
+let currentColumn = 'home';
+
+function loadColumn(){
+  const selector = document.getElementById("pageSelector");
+  currentColumn = selector.value;
+  let articles = JSON.parse(localStorage.getItem(currentColumn+'Articles')) || [];
+  renderArticles(articles);
+}
+
+function renderArticles(articles){
+  const container = document.getElementById("columnEditor");
+  container.innerHTML = '';
+  articles.forEach((content, index) => {
+    const div = document.createElement('div');
+    div.className = 'article';
+    div.contentEditable = "true";
+    div.innerHTML = content;
+    div.setAttribute('data-index', index);
+
+    // Delete Article Button
+    const delBtn = document.createElement('button');
+    delBtn.innerText = "Delete";
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      articles.splice(index,1);
+      renderArticles(articles);
+    };
+    div.appendChild(delBtn);
+
+    // Add Image on click
+    div.ondblclick = () => addImage(div);
+
+    container.appendChild(div);
+  });
+}
+
+// ==== Add Article ====
+function addArticle(){
+  let articles = JSON.parse(localStorage.getItem(currentColumn+'Articles')) || [];
+  articles.push('<p>New article...</p>');
+  renderArticles(articles);
+}
+
+// ==== Add Image ====
+function addImage(articleDiv){
+  const url = prompt("Enter Image URL:");
+  if(url){
+    articleDiv.innerHTML += `<br><img src="${url}" style="max-width:100%;">`;
+  }
+}
+
+// ==== Save Column ====
+function saveColumn(finish){
+  const container = document.getElementById("columnEditor");
+  const articles = Array.from(container.getElementsByClassName('article'))
+                        .map(a => a.innerHTML.replace('<button>Delete</button>', '').trim());
+  localStorage.setItem(currentColumn+'Articles', JSON.stringify(articles));
+  alert(currentColumn + " articles saved!");
+
+  if(finish){
+    const pageMap = {
+      home:'index.html',
+      campus:'campus.html',
+      resources:'resources.html',
+      sports:'sports.html',
+      opinion:'opinion.html'
+    };
+    window.location.href = pageMap[currentColumn];
+  }
+}
+</script>
+
+</body>
+</html>
