@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FKS Press - Campus Life</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>FKS Press</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="campus.html">Campus Life</a>
+    <a href="resources.html">College Resources</a>
+    <a href="sports.html">Sports</a>
+    <a href="opinion.html">Opinion Pieces</a>
+    <a href="signup.html">Sign Up</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<section id="campus" class="articles"></section>
+
+<aside class="sidebar">
+  <h3>Trending</h3>
+  <ul>
+    <li><a href="#">Trending Story 1</a></li>
+    <li><a href="#">Trending Story 2</a></li>
+    <li><a href="#">Trending Story 3</a></li>
+  </ul>
+</aside>
+
+<section class="contact-us">
+  <h2>Contact Us</h2>
+  <p>Email: <a href="mailto:fks.press25@gmail.com">fks.press25@gmail.com</a></p>
+</section>
+
+<footer>
+  <p>&copy; 2026 FKS Press. All Rights Reserved.</p>
+</footer>
+
+<script>
+const content = localStorage.getItem('campusContent');
+document.getElementById('campus').innerHTML = content || '<h3>Campus Life</h3><p>Edit this via Admin panel.</p>';
+</script>
+</body>
+</html>
